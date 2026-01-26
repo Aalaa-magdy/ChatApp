@@ -5,6 +5,7 @@ import Typo from '@/components/Typo'
 import { colors, spacingX, spacingY } from '@/constants/theme'
 import { verticalScale } from '@/utils/styling'
 import Animated, { FadeIn } from 'react-native-reanimated'
+import Button from '@/components/Button'
 
 const welcome = () => {
   return (
@@ -20,15 +21,29 @@ const welcome = () => {
                 source={require('@/assets/images/welcome.png')}
                 style = {styles.welcomeImage}
                 resizeMode= {"contain"} />
-                
-
+        <View>
+            <Typo color={colors.white} size={24} fontWeight={"800"} >
+                Stay Connected
+             </Typo>
+              <Typo color={colors.white} size={24} fontWeight={"800"} >
+                 with your friends
+             </Typo>
+             <Typo color={colors.white} size={24} fontWeight={"800"} >
+                and family
+             </Typo>
+        </View> 
+         <Button style={{backgroundColor : colors.white}}>
+            <Typo >
+                Get Started
+            </Typo>
+         </Button>
         </View>
      </ScreenWrapper>
   )
 }
 
 export default welcome
-
+ 
 const styles = StyleSheet.create({
     container :{
         flex:1,
