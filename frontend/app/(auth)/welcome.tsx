@@ -6,8 +6,10 @@ import { colors, spacingX, spacingY } from '@/constants/theme'
 import { verticalScale } from '@/utils/styling'
 import Animated, { FadeIn } from 'react-native-reanimated'
 import Button from '@/components/Button'
+import { useRouter } from 'expo-router'
 
 const welcome = () => {
+  const router = useRouter();
   return (
      <ScreenWrapper showPattern={true} >
         <View style={styles.container}>
@@ -32,7 +34,8 @@ const welcome = () => {
                 and family
              </Typo>
         </View> 
-         <Button style={{backgroundColor : colors.white}}>
+         <Button style={{backgroundColor : colors.white}}
+           onPress={() => router.push('/(auth)/register')}>
             <Typo >
                 Get Started
             </Typo>
