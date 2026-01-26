@@ -4,7 +4,9 @@ import ScreenWrapper from '@/components/ScreenWrapper'
 import Typo from '@/components/Typo'
 import { colors, radius, spacingX, spacingY } from '@/constants/theme'
 import BackButton from '@/components/BackButton'
-
+import Input from '@/components/Input'
+import * as Icons from 'phosphor-react-native'
+import { verticalScale } from '@/utils/styling'
 const Register = () => {
   return (
     <KeyboardAvoidingView style={{flex:1}}
@@ -24,7 +26,19 @@ const Register = () => {
                         <Typo size = {28} fontWeight={"600"}>
                             Getting Started
                         </Typo>
+                        <Typo color= {colors.neutral600}>
+                            Create an account to continue
+                        </Typo>
                     </View>
+                    <Input  
+                      placeholder = "Enter your Name"
+                      onChangeText = {(value:string ) => console.log("name",value)}
+                      icon = {
+                         <Icons.User
+                           size = {verticalScale(26)}
+                           color = {colors.neutral600} />
+                      }
+                        />
                 </ScrollView>
             </View>
           </View>
