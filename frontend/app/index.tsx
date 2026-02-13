@@ -6,12 +6,12 @@ import { useRoute } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
 const SplashScreen = () => {
-  const router  = useRouter();
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.replace('/(auth)/welcome');
-    }, 1500)
-  }, []);
+  // const router  = useRouter();
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     router.replace('/(auth)/welcome');
+  //   }, 1500)
+  // }, []);
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'}  backgroundColor={colors.neutral900} />

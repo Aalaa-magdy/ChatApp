@@ -1,6 +1,6 @@
 import {DecodedTokenProps, UserProps, type AuthContextProps } from "@/types";
 import { useRouter } from "expo-router";
-import { createContext, useState,ReactNode, useContext } from "react";
+import { createContext, useState,ReactNode, useContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { login, register } from "@/services/authService";
@@ -21,6 +21,45 @@ export const AuthProvider = ({children}:{children:ReactNode})=>{
     const [user , setUser] = useState<UserProps | null>(null);
     const router = useRouter();
 
+
+    useEffect(()=>{
+        loadToken();
+    },[]);
+    const loadToken = async()=>{
+        const storedToken = await AsyncStorage.getItem("token");
+        if(storedToken){
+            try{
+                const decoded = jwtDecode<DecodedTokenProps>(storedToken);
+                if(decoded.exp && decoded.exp < Date.now() / 1000){
+                    await AsyncStorage.removeItem("token");
+                    goToWelcome();
+                    return;
+                }
+
+                setToken(storedToken);
+                setUser(decoded.user);
+                goToHome();
+            }
+            catch(error){
+                goToWelcome();
+                console.log("failed to load token : ",error );
+            }
+        }
+        else{
+            goToWelcome();
+        }
+    }
+    const goToHome = ()=>{
+        setTimeout(()=>{
+            router.replace("/(main)/home");
+        },1500);
+    }
+    const goToWelcome = ()=>{
+        setTimeout(()=>{
+            router.replace("/(auth)/welcome");
+        },1500);
+    }
+     
     const updateToken = async(token:string)=>{ 
         if(token){
             setToken(token);
@@ -29,6 +68,8 @@ export const AuthProvider = ({children}:{children:ReactNode})=>{
             setUser(decoded.user);
         }
     }
+    
+
 
     const signIn = async(email:string, password:string)=>{
         const response = await login(email, password);

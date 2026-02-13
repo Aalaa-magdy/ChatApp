@@ -2,12 +2,27 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import ScreenWrapper from '@/components/ScreenWrapper';
 import Typo from '@/components/Typo';
+import { useAuth } from '@/context/authContext';
+import Button from '@/components/Button';
 
 const Home = () => {
-
+    const {user,signOut } = useAuth();
+    
+    const handleSignOut = async()=>{
+        try{
+            await signOut();
+        }
+        catch(error){
+            console.error("Error signing out", error);
+        }
+    }
     return (
         <ScreenWrapper showPattern={true} bgOpacity={0.5}>
              <Typo size={24} fontWeight={"bold"}>Home</Typo>
+
+             <Button  onPress={handleSignOut} >
+                 <Typo>Logout</Typo>
+             </Button>
         </ScreenWrapper>
     )
 }
