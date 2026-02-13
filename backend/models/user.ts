@@ -19,7 +19,6 @@ const UserSchema = new Schema<UserProps>({
      },
      avatar:{
         type: String,
-        required: true,
      },
      created:{
         type: Date,
