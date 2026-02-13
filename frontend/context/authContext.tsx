@@ -31,25 +31,15 @@ export const AuthProvider = ({children}:{children:ReactNode})=>{
     }
 
     const signIn = async(email:string, password:string)=>{
-        try{
-            const response = await login(email, password);
-            await updateToken(response.token);
-            router.replace("/(main)/home")
-        }
-        catch(error){
-            console.error("Error signing in", error);
-        }
+        const response = await login(email, password);
+        await updateToken(response.token);
+        router.replace("/(main)/home");
     }
 
     const signUp = async(email:string, password:string, name:string, avatar?:string | null)=>{
-        try{
-            const response = await register(email, password, name, avatar);
-            await updateToken(response.token);
-            router.replace("/(main)/home")
-        }
-        catch(error){
-            console.error("Error signing up", error);
-        }
+        const response = await register(email, password, name, avatar);
+        await updateToken(response.token);
+        router.replace("/(main)/home");
     }
     const signOut = async()=>{
         try{

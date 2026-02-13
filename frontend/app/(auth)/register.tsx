@@ -27,8 +27,9 @@ const Register = () => {
             setIsLoading(true);
             await signUp(emailRef.current, passwordRef.current, nameRef.current,"");
         }
-        catch(error){
-            console.error("Error signing up", error);
+        catch(error: any){
+            const message = error?.message || "Registration failed";
+            Alert.alert("Register", message);
         }
         finally{
             setIsLoading(false);
