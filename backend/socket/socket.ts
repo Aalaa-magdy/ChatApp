@@ -32,6 +32,16 @@ export function initializeSocket(server: import("http").Server): Server {
          
        
        });
+       // when socket connects , register events 
+       io.on("connection", async (socket:Socket)=>{
+         const userId = socket.data.userId;
+         console.log(`${userId} connected to the socket , username :${socket.data.name} `);
+
+
+         socket.on("disconnect",()=>{
+            console.log(`user disconnected from the socket : ${userId} ` );  
+         })
+       })
 
        return io;
-}
+}  
