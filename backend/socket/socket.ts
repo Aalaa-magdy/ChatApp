@@ -10,7 +10,7 @@ export function initializeSocket(server: import("http").Server): Server {
           cors: {
             origin: "*",
           }
-       });
+       });  
 
        io.use((socket: Socket, next) => {
           const token = socket.handshake.auth.token;

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes.ts';
 import connectDB from './config/db.ts';
+import { initializeSocket } from './socket/socket.ts';
 dotenv.config();
 
 const app = express();
@@ -20,6 +21,8 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 const server = http.createServer(app);
+const io = initializeSocket(server);
+
 
 connectDB().then(() => {
     server.listen(PORT, () => {
