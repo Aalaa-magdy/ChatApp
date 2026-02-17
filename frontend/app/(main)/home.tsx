@@ -1,13 +1,28 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import ScreenWrapper from '@/components/ScreenWrapper';
 import Typo from '@/components/Typo';
 import { useAuth } from '@/context/authContext';
 import Button from '@/components/Button';
+import { testSocket } from '@/socket/socketEvents';
 
 const Home = () => {
     const {user,signOut } = useAuth();
-    
+
+    useEffect(()=>{
+       testSocket(testSocketCallbackHandler);
+       testSocket(null);
+
+       return ()=>{
+         testSocket(testSocketCallbackHandler,true);
+       }
+    },[])
+     
+
+    const testSocketCallbackHandler = (data:any)=>{
+        console.log("got response from testSocket event: ",data); 
+    }
+
     const handleSignOut = async()=>{
         try{
             await signOut();
