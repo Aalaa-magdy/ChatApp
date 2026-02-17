@@ -37,7 +37,16 @@ const Home = () => {
         <ScreenWrapper showPattern={true} bgOpacity={0.5}>
 
             <View style={styles.container}>
-
+               <View style={styles.header}>
+                  <View style={{flex:1}}>
+                      <Typo color={colors.neutral200} size={19} 
+                        textProps={{numberOfLines:1}}>
+                        Welcome back, 
+                        <Typo size={20} color={colors.white} fontWeight={"800"}>{user?.name}</Typo>
+                        </Typo> {" "} 🤙   
+                        
+                  </View>
+               </View>
             </View>
              {/* <Typo size={24} fontWeight={"bold"}>Home</Typo>
 
