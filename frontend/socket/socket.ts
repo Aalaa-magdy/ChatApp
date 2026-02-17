@@ -28,3 +28,13 @@ export async function connectSocket(): Promise<Socket>{
     return socket;
 }
 
+export function getSocket():Socket | null{
+    return socket;
+}
+
+export function disconnectSocket(): void {
+    if(socket){
+        socket.disconnect();
+        socket = null;
+    }
+}
