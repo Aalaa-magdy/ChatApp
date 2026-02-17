@@ -1,15 +1,18 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect } from 'react'
 import ScreenWrapper from '@/components/ScreenWrapper';
 import Typo from '@/components/Typo';
 import { useAuth } from '@/context/authContext';
 import Button from '@/components/Button';
+import * as Icons from "phosphor-react-native";
 import { testSocket } from '@/socket/socketEvents';
 import { colors, radius, spacingX, spacingY } from '@/constants/theme';
 import { verticalScale } from '@/utils/styling';
+import { useRouter } from 'expo-router';
 
 const Home = () => {
     const {user,signOut } = useAuth();
+    const router = useRouter();
 
     useEffect(()=>{
        testSocket(testSocketCallbackHandler);
@@ -46,6 +49,15 @@ const Home = () => {
                         </Typo> {" "} 🤙   
                         
                   </View>
+                  <TouchableOpacity style={styles.settingIcon} onPress={()=>{router.push("/(main)/profileModal")}}>
+                     <Icons.GearSix 
+                      color={colors.white}
+                      weight="fill"
+                      size={verticalScale(20)} /> 
+                  </TouchableOpacity>
+               </View>
+               <View style={styles.content}>
+                
                </View>
             </View>
              {/* <Typo size={24} fontWeight={"bold"}>Home</Typo>
