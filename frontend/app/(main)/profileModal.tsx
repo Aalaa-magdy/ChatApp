@@ -2,12 +2,15 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { colors, spacingX, spacingY } from '@/constants/theme';
 import { scale, verticalScale } from '@/utils/styling';
+import ScreenWrapper from '@/components/ScreenWrapper';
 
 const ProfileModal = () => {
     return (
-        <View>
-            <Text>ProfileModal</Text>
-        </View>
+        <ScreenWrapper isModal={true} >
+            <View style={styles.container}>
+                
+            </View>
+        </ScreenWrapper>
     )
 }
 
