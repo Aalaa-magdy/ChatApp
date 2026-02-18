@@ -5,13 +5,13 @@ import { spacingX, spacingY } from '@/constants/theme';
 import Typo from './Typo';
 
 const Header = ({title="",leftIcon,rightIcon,style}:HeaderProps) => {
-      <View style={[styles.container,style]}>
+     return( <View style={[styles.container,style]}>
           {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
            
             {title && <Typo size={22} fontWeight={"600"}   style={styles.title}>{title}</Typo>}
 
           {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
-      </View>
+      </View>)
 }
 export default Header;
 

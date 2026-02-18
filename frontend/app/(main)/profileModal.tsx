@@ -1,15 +1,51 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { colors, spacingX, spacingY } from '@/constants/theme';
 import { scale, verticalScale } from '@/utils/styling';
 import ScreenWrapper from '@/components/ScreenWrapper';
+import Header from '@/components/Header';
+import BackButton from '@/components/BackButton';
+import Avatar from '@/components/Avatar';
+import * as Icons from "phosphor-react-native";
+import Typo from '@/components/Typo';
+import Input from '@/components/Input';
 
 const ProfileModal = () => {
     return (
         <ScreenWrapper isModal={true} >
             <View style={styles.container}>
-                
-            </View>
+                <Header 
+                 title={"Update Profile"}
+                 leftIcon={
+                    Platform.OS === "android" && <BackButton color={colors.black} /> 
+                 }
+                 style={{ marginVertical :spacingY._15}}/>
+
+                 <ScrollView contentContainerStyle={styles.form}>
+                     <View style={styles.avatarContainer}>
+                        <Avatar uri={null}  size={170}/>
+                        <TouchableOpacity style={styles.editIcon}>
+                             <Icons.Pencil size={verticalScale(20) } color={colors.neutral800} />
+                        </TouchableOpacity>
+                     </View>
+
+                     <View style={{gap : spacingY._20}}>
+                         <View style={styles.inputContainer}>
+                            <Typo style={{paddingLeft : spacingX._10}}> Email</Typo>
+
+                            <Input 
+                              value={""}
+                              containerStyle={{
+                                borderColor: colors.neutral350,
+                                paddingLeft: spacingX._20,
+                                backgroundColor: colors.neutral300,
+                              }} /> 
+                         </View>
+                     </View>
+                 </ScrollView>
+            </View> 
+
+
         </ScreenWrapper>
     )
 }
