@@ -14,11 +14,12 @@ import { UserDataProps } from '@/types';
 import Button from '@/components/Button';
 import Loading from '@/components/Loading';
 import { useRouter } from 'expo-router';
+import { updateProfile } from '@/socket/socketEvents';
 
 
 const ProfileModal = () => {
 
-    const {user,signOut} = useAuth();
+    const {user,signOut , updateToken} = useAuth();
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     
@@ -27,6 +28,28 @@ const ProfileModal = () => {
         email:"",
         avatar:  null, 
     })
+
+    useEffect(()=>{
+        updateProfile(processUpdateProfile);
+        return ()=>{
+            updateProfile(processUpdateProfile,true);
+        }
+    },[]);
+
+    const processUpdateProfile = (res:any)=>{
+        console.log("process update profile: ", res);
+        setLoading(false);
+
+        if(res.success){
+            updateToken(res.data.token)
+            router.back();
+        }
+        else{
+            Alert.alert("User", res.msg);
+        }
+   }
+
+
     
     useEffect(()=>{
         if(user){
@@ -37,6 +60,9 @@ const ProfileModal = () => {
             })
         }
     },[user]);
+
+
+  
 
     const handleLogout = async()=>{
         try{
@@ -66,7 +92,19 @@ const ProfileModal = () => {
     }
 
     const onSubmit = ()=>{
-
+        let {name, avatar} = userData;
+        if(!name.trim()){
+            Alert.alert("User" , "Please enter your name");
+            return ;
+        }
+        
+        let data = {
+            name,
+            avatar,
+        }
+        setLoading(true);
+        updateProfile(data);
+        
     }
 
     return (
@@ -113,8 +151,8 @@ const ProfileModal = () => {
                                 paddingLeft: spacingX._20,
                               //  backgroundColor: colors.neutral300,
                               }}
-                              onChangeText={(text)=>setUserData({...userData, email: text})}
-                              editable={false} />  
+                              onChangeText={(text)=>setUserData({...userData, name: text})}
+                               />  
 
                          </View>
                      </View>
