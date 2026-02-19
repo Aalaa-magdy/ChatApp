@@ -1,4 +1,4 @@
-import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors, spacingX, spacingY } from '@/constants/theme';
 import { scale, verticalScale } from '@/utils/styling';
@@ -13,12 +13,14 @@ import { useAuth } from '@/context/authContext';
 import { UserDataProps } from '@/types';
 import Button from '@/components/Button';
 import Loading from '@/components/Loading';
+import { useRouter } from 'expo-router';
 
 
 const ProfileModal = () => {
 
-    const {user} = useAuth();
+    const {user,signOut} = useAuth();
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
     
     const [userData,setUserData] = useState<UserDataProps>({
         name:  "",
@@ -35,6 +37,33 @@ const ProfileModal = () => {
             })
         }
     },[user]);
+
+    const handleLogout = async()=>{
+        try{
+            setLoading(true);
+            router.back();
+            await signOut();
+            
+        }
+        catch(error){
+            console.error("Error logging out", error);
+        }
+    }
+    
+    const handleLogoutAlert= ()=>{
+        Alert.alert("Confirm", "Are you sure you want to logout?",[
+            {
+                text: "Cancel",
+                onPress: ()=> console.log("Cancel logout"),
+                style: "cancel",
+            },
+            {
+                text: "Logout",
+                onPress: ()=> handleLogout(),
+                style: "destructive",
+            }
+        ])
+    }
 
     const onSubmit = ()=>{
 
@@ -100,6 +129,7 @@ const ProfileModal = () => {
                               height: verticalScale(56),
                               width: verticalScale(56),
                             }}
+                            onPress={handleLogoutAlert}
                              > 
                             <Icons.SignOut size={verticalScale(20)} color={colors.white} weight="bold" />
                           </Button>
