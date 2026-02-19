@@ -1,5 +1,5 @@
 import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { colors, spacingX, spacingY } from '@/constants/theme';
 import { scale, verticalScale } from '@/utils/styling';
 import ScreenWrapper from '@/components/ScreenWrapper';
@@ -9,8 +9,37 @@ import Avatar from '@/components/Avatar';
 import * as Icons from "phosphor-react-native";
 import Typo from '@/components/Typo';
 import Input from '@/components/Input';
+import { useAuth } from '@/context/authContext';
+import { UserDataProps } from '@/types';
+import Button from '@/components/Button';
+import Loading from '@/components/Loading';
+
 
 const ProfileModal = () => {
+
+    const {user} = useAuth();
+    const [loading, setLoading] = useState(false);
+    
+    const [userData,setUserData] = useState<UserDataProps>({
+        name:  "",
+        email:"",
+        avatar:  null, 
+    })
+    
+    useEffect(()=>{
+        if(user){
+            setUserData({
+                name: user.name || "", 
+                email: user.email || "",
+                avatar: user.avatar || null,
+            })
+        }
+    },[user]);
+
+    const onSubmit = ()=>{
+
+    }
+
     return (
         <ScreenWrapper isModal={true} >
             <View style={styles.container}>
@@ -34,15 +63,54 @@ const ProfileModal = () => {
                             <Typo style={{paddingLeft : spacingX._10}}> Email</Typo>
 
                             <Input 
-                              value={""}
+                              value={userData.email}
                               containerStyle={{
                                 borderColor: colors.neutral350,
                                 paddingLeft: spacingX._20,
                                 backgroundColor: colors.neutral300,
-                              }} /> 
+                              }}
+                              onChangeText={(text)=>setUserData({...userData, email: text})}
+                              editable={false} />  
+
+                         </View>
+
+                         <View style={styles.inputContainer}>
+                            <Typo style={{paddingLeft : spacingX._10}}>Name</Typo>
+
+                            <Input 
+                              value={userData.name}
+                              containerStyle={{
+                                borderColor: colors.neutral350,
+                                paddingLeft: spacingX._20,
+                              //  backgroundColor: colors.neutral300,
+                              }}
+                              onChangeText={(text)=>setUserData({...userData, email: text})}
+                              editable={false} />  
+
                          </View>
                      </View>
+                    
                  </ScrollView>
+                 <View style={styles.footer}>
+                    {
+                        !loading && (
+                            <Button
+                            style={{
+                              backgroundColor: colors.rose,
+                              height: verticalScale(56),
+                              width: verticalScale(56),
+                            }}
+                             > 
+                            <Icons.SignOut size={verticalScale(20)} color={colors.white} weight="bold" />
+                          </Button>
+                        )
+                    }
+                       
+                        
+                        <Button style={{flex:1}} onPress={onSubmit} loading={loading}>
+                            <Typo fontWeight={'bold'} color={colors.black} size={20}>Update </Typo>
+                        </Button>
+                     </View>
             </View> 
 
 
