@@ -15,7 +15,7 @@ import Button from '@/components/Button';
 import Loading from '@/components/Loading';
 import { useRouter } from 'expo-router';
 import { updateProfile } from '@/socket/socketEvents';
-
+import * as ImagePicker from 'expo-image-picker';
 
 const ProfileModal = () => {
 
@@ -61,7 +61,20 @@ const ProfileModal = () => {
         }
     },[user]);
 
-
+    const onPickImage = async()=>{
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images', 'videos'],
+           // allowsEditing: true,
+            aspect: [4, 3],
+            quality: 0.5,
+          });
+      
+          console.log(result);
+      
+          if (!result.canceled) {
+            setUserData({...userData, avatar: result.assets[0].uri});
+          }
+    }
   
 
     const handleLogout = async()=>{
@@ -119,8 +132,8 @@ const ProfileModal = () => {
 
                  <ScrollView contentContainerStyle={styles.form}>
                      <View style={styles.avatarContainer}>
-                        <Avatar uri={null}  size={170}/>
-                        <TouchableOpacity style={styles.editIcon}>
+                        <Avatar uri={userData.avatar}  size={170}/>
+                        <TouchableOpacity style={styles.editIcon} onPress={onPickImage}>
                              <Icons.Pencil size={verticalScale(20) } color={colors.neutral800} />
                         </TouchableOpacity>
                      </View>
