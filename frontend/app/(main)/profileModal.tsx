@@ -16,6 +16,7 @@ import Loading from '@/components/Loading';
 import { useRouter } from 'expo-router';
 import { updateProfile } from '@/socket/socketEvents';
 import * as ImagePicker from 'expo-image-picker';
+import { uploadFileToCloudinary } from '@/services/imageService';
 
 const ProfileModal = () => {
 
@@ -69,10 +70,10 @@ const ProfileModal = () => {
             quality: 0.5,
           });
       
-          console.log(result);
+      //    console.log(result);
       
           if (!result.canceled) {
-            setUserData({...userData, avatar: result.assets[0].uri});
+            setUserData({...userData, avatar: { uri: result.assets[0].uri }});
           }
     }
   
@@ -104,7 +105,7 @@ const ProfileModal = () => {
         ])
     }
 
-    const onSubmit = ()=>{
+    const onSubmit = async ()=>{
         let {name, avatar} = userData;
         if(!name.trim()){
             Alert.alert("User" , "Please enter your name");
@@ -115,9 +116,25 @@ const ProfileModal = () => {
             name,
             avatar,
         }
-        setLoading(true);
-        updateProfile(data);
-        
+
+
+      if(avatar && avatar?.uri){
+         setLoading(true);
+         const response = await uploadFileToCloudinary(avatar, "profiles");
+         console.log("response: ", response);
+         if(response.success){
+            data.avatar = response.data;
+         }
+         else{
+            Alert.alert("User", response.msg);
+            setLoading(false);
+            return;
+         }
+
+      }  
+
+         updateProfile(data);
+  
     }
 
     return (
