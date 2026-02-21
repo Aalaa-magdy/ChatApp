@@ -66,6 +66,9 @@ const Home = () => {
                               <TouchableOpacity style={[styles.tabStyle , selectedTab === 0 && styles.activeTabStyle]} onPress={()=>{setSelectedTab(0)}}>
                                  <Typo size={16} fontWeight={"600"} color={colors.text}>Direct Messages</Typo>
                               </TouchableOpacity>
+                              <TouchableOpacity style={[styles.tabStyle , selectedTab === 1 && styles.activeTabStyle]} onPress={()=>{setSelectedTab(1)}}>
+                                 <Typo size={16} fontWeight={"600"} color={colors.text}>Groups</Typo>
+                              </TouchableOpacity>
                           </View>
                       </View>
                    </ScrollView>
