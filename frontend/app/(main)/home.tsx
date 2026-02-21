@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect } from 'react'
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '@/components/ScreenWrapper';
 import Typo from '@/components/Typo';
 import { useAuth } from '@/context/authContext';
@@ -14,6 +14,8 @@ const Home = () => {
     const {user,signOut } = useAuth();
     const router = useRouter();
 
+    const [selectedTab,setSelectedTab] = useState(0);
+    
     useEffect(()=>{
        testSocket(testSocketCallbackHandler);
        testSocket(null);
@@ -57,7 +59,16 @@ const Home = () => {
                   </TouchableOpacity>
                </View>
                <View style={styles.content}>
-                
+                   <ScrollView showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{paddingVertical:spacingY._20}}>
+                      <View style={styles.navBar}>
+                          <View style={styles.tabs}>
+                              <TouchableOpacity style={[styles.tabStyle , selectedTab === 0 && styles.activeTabStyle]} onPress={()=>{setSelectedTab(0)}}>
+                                 <Typo size={16} fontWeight={"600"} color={colors.text}>Direct Messages</Typo>
+                              </TouchableOpacity>
+                          </View>
+                      </View>
+                   </ScrollView>
                </View>
             </View>
              {/* <Typo size={24} fontWeight={"bold"}>Home</Typo>
