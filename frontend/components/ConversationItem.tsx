@@ -1,12 +1,72 @@
-import {StyleSheet,Text,View} from "react-native";
+import {StyleSheet,Text,TouchableOpacity,View} from "react-native";
 import React from "react";
-import { spacingX, spacingY } from "@/constants/theme";
+import { colors, spacingX, spacingY } from "@/constants/theme";
+import Avatar from "./Avatar";
+import Typo from "./Typo";
+import moment from "moment";
 
 
-const ConversationItem = () => {
+const ConversationItem = ({item,showDivider,router}:any) => {
+
+
+
+    const openConversation = () => {}
+
+    const lastMessage : any = item.lastMessage;
+    const isDirect = item.type == "direct";
+
+    const getLastMessageContent = ()=>{
+
+        if(!lastMessage) return "Say hi 👋";
+
+        return lastMessage?.attachment?"Image": lastMessage.content;
+
+    }
+
+    const getLastMessageDate = ()=>{
+        if(!lastMessage?.createdAt) return null;
+
+        const messageDate = moment(lastMessage?.createdAt);
+
+        const today = moment();
+
+        if(messageDate.isSame(today,"day")){
+            return messageDate.format("h:mm A");
+        }
+        if(messageDate.isSame(today,"year")){
+            return messageDate.format("MMM D");
+        }
+            return messageDate.format("MMM D , YYYY");
+    
+    }
+
     return (
         <View>
-             <Text>ConversationItem</Text>
+              <TouchableOpacity
+               style={styles.conversationItem}>
+                 <View>
+                    <Avatar uri={null} size={47} isGroup={item.type == "group"} />
+                 </View>
+                 <View style={{flex:1}}>
+                      <View style={styles.row}>
+                         <Typo size={17} fontWeight={"600"}>{item?.name}</Typo>
+
+                         {
+                            item.lastMessage && (
+                                <Typo size={15} >{getLastMessageDate()  }</Typo>
+                            )
+                         }
+                      </View>
+
+                      <Typo size ={15}
+                        color={colors.neutral600}
+                        textProps= {{numberOfLines: 1}} >
+                            {getLastMessageContent()}
+                        </Typo>
+                 </View>
+              </TouchableOpacity>
+
+              {showDivider && <View style={styles.divider} />}
         </View>
     )
 }

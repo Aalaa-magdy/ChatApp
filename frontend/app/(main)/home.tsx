@@ -45,11 +45,11 @@ const Home = () => {
         {
             name: "Alice",
             type: "direct",
-            lastMessage: {
-                senderName: "Alice",
-                content: "Hello, how are you?",
-                createdAt:"2026-02-24T10:00:00.000Z",
-            }
+            // lastMessage: {
+            //     senderName: "Alice",
+            //     content: "Hello, how are you?",
+            //     createdAt:"2026-02-24T10:00:00.000Z",
+            // }
         },
         {
             name: "Project Team",
