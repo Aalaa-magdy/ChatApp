@@ -89,6 +89,6 @@ const styles = StyleSheet.create({
         height: 1,
         width: "95%",
         alignSelf: "center",
-        backgroundColor: "rgba(0,0,0,0.7)",
+        backgroundColor: "rgba(0,0,0,0.2)",
     }
 })

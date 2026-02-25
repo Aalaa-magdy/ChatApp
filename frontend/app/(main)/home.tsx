@@ -149,10 +149,10 @@ const Home = () => {
                             })
                          }
                            {
-                            selectedTab === 1  && directConversations.map((item:any , index) => {
+                            selectedTab === 1  && groupConversations.map((item:any , index) => {
                                 return (
                                     <ConversationItem key={index} item={item} 
-                                    router={router} showDivider={directConversations.length != index + 1} />
+                                    router={router} showDivider={groupConversations.length != index + 1} />
                                 )
                             })
                          }
