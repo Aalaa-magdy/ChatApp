@@ -1,17 +1,33 @@
+import Avatar from "@/components/Avatar";
 import BackButton from "@/components/BackButton";
 import Header from "@/components/Header";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import {useLocalSearchParams, useRouter} from "expo-router";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-
+import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
+ 
 const NewConversationModal = () => {
 
     const {isGroup} = useLocalSearchParams();
     const isGroupMode = isGroup == "1";
     const router = useRouter();
-    
+    const [groupAvatar, setGroupAvatar] = useState<string | null>(null);
+    const onPickImage = async()=>{
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images', 'videos'],
+           // allowsEditing: true,
+            aspect: [4, 3],
+            quality: 0.5,
+          });
+      
+      //    console.log(result);
+      
+          if (!result.canceled) {
+            setGroupAvatar(result.assets[0].uri);
+          }
+    }
     const contacts =[
         {
             id:"1",
@@ -21,17 +37,17 @@ const NewConversationModal = () => {
         {
             id:"2",
             name:"Ahmed Mohamed",
-            avatar:"https://unsplash.com/photos/man-in-black-shirt-wearing-sunglasses-taking-selfie-oRw7_ZtX00w",
+            avatar:"https://unsplash.com/photos/a-man-in-a-suit-and-glasses-leaning-against-a-wall-npN-Q3NumpM",
         },
         {
             id:"3",
             name:"Sara Mohamed",
-            avatar:"https://unsplash.com/photos/woman-in-white-shirt-taking-selfie-uvnApE6gmnM",
+            avatar:"https://unsplash.com/photos/a-woman-standing-in-the-shadows-of-a-wall-KuYt10e1wro",
         },
         {
             id:"4",
             name:"Mohamed Ali",
-            avatar:"https://unsplash.com/photos/man-in-black-shirt-wearing-sunglasses-taking-selfie-oRw7_ZtX00w",
+            avatar:"https://unsplash.com/photos/latin-man-portrait-looking-to-camera-outside-office-in-mexico-city-Qvrg_du6MRA",
         },
     ]
 
@@ -44,6 +60,17 @@ const NewConversationModal = () => {
               title={isGroupMode ? "Create Group" : "Select User"}
               leftIcon= {<BackButton color={colors.black} />}
               />
+              {
+                isGroupMode && (
+                    <View style={styles.groupInfoContainer}>
+                       <View style={styles.avatarContainer}>
+                            <TouchableOpacity onPress={onPickImage}>
+                              <Avatar uri={null} size={100} isGroup={true} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )
+              }
         </View>
     </ScreenWrapper>
     )
