@@ -5,15 +5,25 @@ import ScreenWrapper from "@/components/ScreenWrapper";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import {useLocalSearchParams, useRouter} from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
+import Input from "@/components/Input";
+import { ScrollView } from "react-native";
+import Typo from "@/components/Typo";
+import { useAuth } from "@/context/authContext";
  
 const NewConversationModal = () => {
 
     const {isGroup} = useLocalSearchParams();
     const isGroupMode = isGroup == "1";
     const router = useRouter();
-    const [groupAvatar, setGroupAvatar] = useState<string | null>(null);
+    const [groupAvatar, setGroupAvatar] = useState< {uri: string} | null>(null);
+    const [groupName, setGroupName] = useState<string>("");
+    const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
+    
+    const {user:currentUser} = useAuth();
+
+
     const onPickImage = async()=>{
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images', 'videos'],
@@ -25,29 +35,52 @@ const NewConversationModal = () => {
       //    console.log(result);
       
           if (!result.canceled) {
-            setGroupAvatar(result.assets[0].uri);
+            setGroupAvatar(result.assets[0]);
           }
     }
+
+    const toggleParticipant = (user:any)=>{
+        setSelectedParticipants((prev:any)=>{
+            if(prev.includes(user.id)){
+                return prev.filter((id: string)=> id !== user.id);
+            }
+            return [...prev, user.id];
+        });
+    }
+
+   const onSelectUser = (user:any)=>{
+        if(!currentUser){
+            Alert.alert("Authentication Error", "Please login to start a conversation");
+            return;
+        }
+        if(isGroupMode){
+            toggleParticipant(user);
+        }
+   }
+
+
+    // Use direct image URLs: Unsplash page URLs (unsplash.com/photos/...) return HTML, not images.
+    // These are direct CDN URLs that expo-image can load.
     const contacts =[
         {
             id:"1",
             name:"Malak Taha",
-            avatar:"https://unsplash.com/photos/woman-in-white-shirt-taking-selfie-uvnApE6gmnM",
+            avatar:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
         },
         {
             id:"2",
             name:"Ahmed Mohamed",
-            avatar:"https://unsplash.com/photos/a-man-in-a-suit-and-glasses-leaning-against-a-wall-npN-Q3NumpM",
+            avatar:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
         },
         {
             id:"3",
             name:"Sara Mohamed",
-            avatar:"https://unsplash.com/photos/a-woman-standing-in-the-shadows-of-a-wall-KuYt10e1wro",
+            avatar:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
         },
         {
             id:"4",
             name:"Mohamed Ali",
-            avatar:"https://unsplash.com/photos/latin-man-portrait-looking-to-camera-outside-office-in-mexico-city-Qvrg_du6MRA",
+            avatar:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
         },
     ]
 
@@ -65,12 +98,48 @@ const NewConversationModal = () => {
                     <View style={styles.groupInfoContainer}>
                        <View style={styles.avatarContainer}>
                             <TouchableOpacity onPress={onPickImage}>
-                              <Avatar uri={null} size={100} isGroup={true} />
+                              <Avatar uri={groupAvatar?.uri || null} size={100} isGroup={true} />
                             </TouchableOpacity>
                         </View>
+  
+                     <View style={styles.groupNameContainer}>
+                         <Input 
+                          placeholder="Group Name" 
+                          value={groupName}
+                          onChangeText={setGroupName}
+                          />
+                      </View> 
                     </View>
+
                 )
               }
+              <ScrollView
+               showsVerticalScrollIndicator={false}
+               contentContainerStyle={styles.contactList}>
+                  {
+                    contacts.map((user:any,index)=>{
+                        const isSelected = selectedParticipants.includes(user.id) ;
+                        return (
+                            <TouchableOpacity
+                              key={index}
+                              style={[styles.contactRow, isSelected && styles.selectedContact]}
+                              onPress={()=> onSelectUser(user)}>
+                                <Avatar uri={user.avatar} size={40} />
+                                <Typo size={16} fontWeight={"600"}>{user.name}</Typo>
+                                {
+                                     isGroupMode && (
+                                        <View style={styles.selectionIndicator}>
+                                            <View style={[styles.checkbox, isSelected &&   styles.checked ]} >
+
+                                            </View>
+                                        </View>
+                                     )
+                                }
+                              </TouchableOpacity>
+                        )
+                    })
+                  }
+               </ScrollView>
         </View>
     </ScreenWrapper>
     )

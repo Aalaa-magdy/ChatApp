@@ -116,7 +116,9 @@ const Home = () => {
                         textProps={{numberOfLines:1}}>
                         Welcome back, 
                         <Typo size={20} color={colors.white} fontWeight={"800"}>{user?.name}</Typo>
-                        </Typo> {" "} 🤙   
+                        <Text>  🤙   </Text>  
+                        </Typo> 
+                        
                         
                   </View>
                   <TouchableOpacity style={styles.settingIcon} onPress={()=>{router.push("/(main)/profileModal")}}>
