@@ -1,6 +1,7 @@
 import type { Socket, Server as SocketServer } from "socket.io";
 import User from "../models/user.ts";
 import { generateToken } from "../utils/token.ts";
+import user from "../models/user.ts";
 
  export function registerUserEvents(io: SocketServer , socket: Socket){
     socket.on("testSocket",(data)=>{
@@ -36,5 +37,43 @@ import { generateToken } from "../utils/token.ts";
      return socket.emit("updateProfileError" , ({success: false, msg: "Internal server error"}))
     }
     
- })
+    })
+
+    socket.on("getContacts", async()=>{
+       try{
+          const currentUserId = socket.data.userId;
+          if(!currentUserId){
+               socket.emit("getContacts",{
+                success: false,
+                msg: "Unauthorized"
+               })
+               return;
+          }
+
+          const users = await User.find(
+            { _id: {$ne: currentUserId}},
+             { password: 0}).lean();
+
+          const contacts = users.map((user)=>({
+              id: user._id.toString(),
+              name: user.name,
+              avatar: user.avatar || "",
+          }))
+
+          socket.emit("getContacts",{
+            success: true,
+            data: contacts,
+            msg: "Contacts fetched successfully"
+          })
+
+       }
+       catch(error:any){
+         console.error("Error getting contacts", error);
+         socket.emit("getContacts",{
+            success: false,
+            msg: "Failed to fetch contacts"
+         })
+
+       }
+    })
  } 
