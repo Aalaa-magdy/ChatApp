@@ -58,9 +58,16 @@ const NewConversationModal = () => {
         if(isGroupMode){
             toggleParticipant(user);
         }
+        else{
+            //todo: start a direct conversation
+        }
    }
    
    const createGroup = async()=>{
+
+      if(!groupName.trim() || !currentUser || selectedParticipants.length < 2){
+        return ;
+      }
       
    }
 
@@ -119,7 +126,7 @@ const NewConversationModal = () => {
         }
     ]
 
-    console.log("isGroup",isGroup);
+  
 
     return (
     <ScreenWrapper isModal={true} >
