@@ -11,6 +11,8 @@ import Input from "@/components/Input";
 import { ScrollView } from "react-native";
 import Typo from "@/components/Typo";
 import { useAuth } from "@/context/authContext";
+import Button from "@/components/Button";
+import { verticalScale } from "@/utils/styling";
  
 const NewConversationModal = () => {
 
@@ -22,7 +24,7 @@ const NewConversationModal = () => {
     const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
     
     const {user:currentUser} = useAuth();
-
+    const [isLoading, setIsLoading] = useState(false);
 
     const onPickImage = async()=>{
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -57,7 +59,10 @@ const NewConversationModal = () => {
             toggleParticipant(user);
         }
    }
-
+   
+   const createGroup = async()=>{
+      
+   }
 
     // Use direct image URLs: Unsplash page URLs (unsplash.com/photos/...) return HTML, not images.
     // These are direct CDN URLs that expo-image can load.
@@ -80,8 +85,38 @@ const NewConversationModal = () => {
         {
             id:"4",
             name:"Mohamed Ali",
-            avatar:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
+            avatar:"https://images.unsplash.com/photo-1604612570084-f0f35379ed71?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         },
+        {
+            id:"5",
+            name:"Salma Khaled",
+            avatar:"https://images.unsplash.com/photo-1604054388996-00aa182dbe0e?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        },
+        {
+            id:"6",
+            name:"Alaa Ahmed",
+            avatar:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
+        },
+        {
+            id:"7",
+            name:"Yara El-Sayed",
+            avatar:"https://plus.unsplash.com/premium_photo-1668443423892-2783b69f4387?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        },
+        {
+            id:"8",
+            name:"Nour Mohamed",
+            avatar:"https://images.unsplash.com/photo-1741291468276-29867cc7a3d5?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        },
+        {
+            id:"9",
+            name:"Hadeer Ali",
+            avatar:"https://images.unsplash.com/photo-1596215143922-eedeaba0d91c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        },
+        {
+            id:"10",
+            name:"Gamal Ahmed",
+            avatar:"https://images.unsplash.com/photo-1579798099187-dfb42cf64378?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+        }
     ]
 
     console.log("isGroup",isGroup);
@@ -140,6 +175,18 @@ const NewConversationModal = () => {
                     })
                   }
                </ScrollView>
+               {
+                   isGroupMode && selectedParticipants.length >= 2 && (
+                      <View style={styles.createGroupButton}>
+                        <Button  
+                           onPress={createGroup}
+                           disabled={!groupName.trim()} 
+                           loading={isLoading}>
+                            <Typo size={17} fontWeight={"bold"}>Create Group</Typo>
+                        </Button>
+                      </View>
+                   )
+               }
         </View>
     </ScreenWrapper>
     )
@@ -176,7 +223,7 @@ const styles = StyleSheet.create({
         gap : spacingY._12,
         marginTop: spacingY._10,
         paddingTop: spacingY._10,
-        paddingBottom: spacingY._20,
+        paddingBottom: verticalScale(150),
      },
      selectionIndicator:{
         marginLeft: "auto",
