@@ -52,7 +52,7 @@ export const getContacts= (payload:any,off:boolean = false)=>{
         socket.on("getContacts",payload); // payload as callback for this event 
     }
     else{
-         socket.emit("getContacts ",payload); // payload as data to send to the server
+         socket.emit("getContacts",payload); // payload as data to send to the server
     }
 
 } 
