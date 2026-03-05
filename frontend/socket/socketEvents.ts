@@ -56,3 +56,22 @@ export const getContacts= (payload:any,off:boolean = false)=>{
     }
 
 } 
+
+export const = (payload:any,off:boolean = false)=>{
+    const socket = getSocket();
+
+    if(!socket){
+        console.log("Socket not connected");
+        return;
+    }
+    if(off){
+        socket.off("getContacts",payload); // payload is the callback
+    }
+    else if(typeof payload === "function"){
+        socket.on("getContacts",payload); // payload as callback for this event 
+    }
+    else{
+         socket.emit("getContacts",payload); // payload as data to send to the server
+    }
+
+} 
