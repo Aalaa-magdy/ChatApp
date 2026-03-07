@@ -71,7 +71,7 @@ export const newConversation = (payload:any,off:boolean = false)=>{
         socket.on("newConversation",payload); // payload as callback for this event 
     }
     else{
-         socket.emit("newConvers ation",payload); // payload as data to send to the server
+         socket.emit("newConversation",payload); // payload as data to send to the server
     }
 
 } 

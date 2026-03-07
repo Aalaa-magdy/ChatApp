@@ -39,7 +39,7 @@ const NewConversationModal = () => {
     },[]);
 
     const processGetContacts = (res:any)=>{
-        console.log("process get contacts: ", res);
+     //   console.log("process get contacts: ", res);
         if(res.success){
             setContacts(res.data);
         }
@@ -47,7 +47,7 @@ const NewConversationModal = () => {
     const processNewConversation = (res:any)=>{
         console.log("process new conversation: ", res);
         if(res.success){ 
-            router.push(`/chat/${res.data._id}`);
+            
         }
     }
     const onPickImage = async()=>{
