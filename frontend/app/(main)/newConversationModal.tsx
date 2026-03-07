@@ -13,7 +13,7 @@ import Typo from "@/components/Typo";
 import { useAuth } from "@/context/authContext";
 import Button from "@/components/Button";
 import { verticalScale } from "@/utils/styling";
-import { getContacts } from "@/socket/socketEvents";
+import { getContacts, newConversation } from "@/socket/socketEvents";
  
 const NewConversationModal = () => {
 
@@ -31,6 +31,7 @@ const NewConversationModal = () => {
 
     useEffect (()=>{
         getContacts(processGetContacts);
+        newConversation(processNewConversation);
         getContacts(null);
         return ()=>{
             getContacts(processGetContacts,true);
@@ -41,6 +42,12 @@ const NewConversationModal = () => {
         console.log("process get contacts: ", res);
         if(res.success){
             setContacts(res.data);
+        }
+    }
+    const processNewConversation = (res:any)=>{
+        console.log("process new conversation: ", res);
+        if(res.success){ 
+            router.push(`/chat/${res.data._id}`);
         }
     }
     const onPickImage = async()=>{
@@ -76,7 +83,10 @@ const NewConversationModal = () => {
             toggleParticipant(user);
         }
         else{
-            //todo: start a direct conversation
+             newConversation({
+                type: "direct",
+                participants: [currentUser.id, user.id],
+             })
         }
    }
    
