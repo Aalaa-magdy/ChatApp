@@ -21,6 +21,7 @@ import Conversation from "../models/conversation.ts";
                         success: true,
                         data: {...existingConversation, isNew: false}
                     }); 
+                    return;
                 }
             }
             const conversation = await Conversation.create({
