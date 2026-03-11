@@ -47,7 +47,23 @@ const NewConversationModal = () => {
     const processNewConversation = (res:any)=>{
         console.log("process new conversation: ", res);
         if(res.success){ 
-            
+            router.back();
+            router.push({
+                pathname: "/conversation",
+                params: {
+                    id: res.data._id,
+                    name: res.data.name,
+                    avatar: res.data.avatar,
+                    type: res.data.type,
+                    participants: JSON.stringify(res.data.participants),
+                    lastMessage: res.data.lastMessage,
+                 
+                }
+            });
+        }
+        else{
+            console.log("error in new conversation: ", res.msg);
+            Alert.alert("Error", res.msg || "Failed to create conversation");
         }
     }
     const onPickImage = async()=>{
