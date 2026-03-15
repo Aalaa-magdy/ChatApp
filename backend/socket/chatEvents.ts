@@ -2,9 +2,49 @@
 import Conversation from "../models/conversation.ts";
 
  export function registerChatEvents(io: SocketServer , socket: Socket){
-    socket.on("newConversation", async(data)=>{
-           console.log("new conversation event: ", data);
 
+    socket.on("getCoversations", async()=>{
+        console.log("get conversations event")
+        try{
+           const userId =  socket.data.userId;
+           if(!userId){
+              socket.emit("getConversations",{
+               success: false,
+               msg: "Unauthorized"
+              })
+              return;
+           }
+
+           // find all the conversations the user is part of 
+           const conversations = await Conversation.find({
+            participants: userId
+           })
+           .sort({updatedAt: -1})
+           .populate({
+              path: "lastMessage",
+              select: "content senderId attachment createdAt"
+           })
+            .populate({
+               path : "participants",
+               select : "name avatar email"  
+            })
+            .lean();
+
+            socket.emit("getConversations",{
+               success: true,
+               data : conversations
+            })
+        }
+        catch(error:any){
+         console.error("Error get conversations", error);
+         socket.emit("getConversations",{
+             success: false,
+             msg: "Failed to get conversations"
+         })
+        }
+    })
+
+    socket.on("newConversation", async(data)=>{
            try{
 
             if(data.type == "direct"){
