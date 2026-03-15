@@ -3,9 +3,15 @@ import React from 'react'
 import { Stack } from 'expo-router'
 import { AuthProvider } from '@/context/authContext'
 
+// Ensure splash (index) is the initial screen, not the first modal in the stack
+export const unstable_settings = {
+  initialRouteName: 'index',
+}
+
 const StackLayout = () => {
   return (
-    <Stack screenOptions={{headerShown:false}} >
+    <Stack screenOptions={{headerShown:false}}>
+      <Stack.Screen name="index" />
       <Stack.Screen name="(main)/profileModal" 
       options={{presentation:"modal"}} />
 
