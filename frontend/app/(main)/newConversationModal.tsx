@@ -14,6 +14,7 @@ import { useAuth } from "@/context/authContext";
 import Button from "@/components/Button";
 import { verticalScale } from "@/utils/styling";
 import { getContacts, newConversation } from "@/socket/socketEvents";
+import { uploadFileToCloudinary } from "@/services/imageService";
  
 const NewConversationModal = () => {
 
@@ -46,6 +47,7 @@ const NewConversationModal = () => {
     }
     const processNewConversation = (res:any)=>{
         console.log("process new conversation: ", res);
+        setIsLoading(false)
         if(res.success){ 
             router.back();
             router.push({
@@ -110,6 +112,31 @@ const NewConversationModal = () => {
 
       if(!groupName.trim() || !currentUser || selectedParticipants.length < 2){
         return ;
+      }
+
+      setIsLoading(true);
+
+      try{
+        let avatar = null;
+        if(groupAvatar){
+                  const uploadResult = await uploadFileToCloudinary(  groupAvatar, "group-avatar" );  
+                  if (uploadResult.success) {
+                        avatar = uploadResult.data;
+                  }            
+        }
+        newConversation({
+            type: "group",
+            participants : [currentUser.id , ...selectedParticipants ],
+            name: groupName,
+            avatar
+        })
+      }
+      catch(error:any){
+        console.log("Error creating group: " ,error )
+        Alert.alert("Error" , error.message)
+      }
+      finally{
+            setIsLoading(false)
       }
       
    }
