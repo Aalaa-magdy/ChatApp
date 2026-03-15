@@ -5,12 +5,14 @@ import Typo from '@/components/Typo';
 import { useAuth } from '@/context/authContext';
 import Button from '@/components/Button';
 import * as Icons from "phosphor-react-native";
-import { testSocket } from '@/socket/socketEvents';
+import { getConversations, testSocket } from '@/socket/socketEvents';
 import { colors, radius, spacingX, spacingY } from '@/constants/theme';
 import { verticalScale } from '@/utils/styling';
 import { useRouter } from 'expo-router';
 import ConversationItem from '@/components/ConversationItem';
 import Loading from '@/components/Loading';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { ResponseProps } from '@/types';
 
 const Home = () => { 
     const {user,signOut } = useAuth();
@@ -18,6 +20,18 @@ const Home = () => {
     const [loading,setLoading] = useState(false);
     const [selectedTab,setSelectedTab] = useState(0);
     
+
+   useEffect(()=>{
+      getConversations(processGetConversations)
+      return ()=>{
+        getConversations(processGetConversations,true)
+      }
+   })
+   
+   const processGetConversations =(res: ResponseProps)=>{
+      console.log("res",res)
+   }
+
     useEffect(()=>{
        testSocket(testSocketCallbackHandler);
        testSocket(null);

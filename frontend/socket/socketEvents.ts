@@ -75,3 +75,22 @@ export const newConversation = (payload:any,off:boolean = false)=>{
     }
 
 } 
+
+export const getConversations = (payload:any,off:boolean = false)=>{
+    const socket = getSocket();
+
+    if(!socket){
+        console.log("Socket not connected");
+        return;
+    }
+    if(off){
+        socket.off("getConversations",payload); // payload is the callback
+    }
+    else if(typeof payload === "function"){
+        socket.on("getConversations",payload); // payload as callback for this event 
+    }
+    else{
+         socket.emit("getConversations",payload); // payload as data to send to the server
+    }
+
+}  
