@@ -38,6 +38,17 @@ const MessageItem = (
              <Typo color= {colors.neutral900} fontWeight={"600"} size={13}>
                 {item.sender.name}
             </Typo>   
+            {
+                item.content && <Typo size={15} color={colors.neutral900}>{item.content}</Typo>
+            }
+            <Typo
+              style={{alignSelf:"flex-end"}}
+              size={11}
+              fontWeight={"500"}
+              color={colors.neutral500}
+              >
+                {item.createdAt}
+              </Typo>
             </View>
         </View>
     )
@@ -48,8 +59,9 @@ export default MessageItem;
 const styles = StyleSheet.create({
     messageContainer:{
         flexDirection:"row",
-        gap: spacingX._7,
+        gap: spacingX._15,
         maxWidth: "80%",
+        marginBottom: spacingY._7 ,
     },
     myMessage:{
         alignSelf:"flex-end",

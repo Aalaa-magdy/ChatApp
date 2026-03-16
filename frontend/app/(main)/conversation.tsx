@@ -7,10 +7,13 @@ import { colors, radius, spacingX, spacingY } from '@/constants/theme'
 import { useAuth } from '@/context/authContext'
 import { scale, verticalScale } from '@/utils/styling'
 import { useLocalSearchParams } from 'expo-router'
-import React from 'react'
-import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity, FlatList } from 'react-native'
+import React, { use, useState } from 'react'
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity, FlatList, Touchable } from 'react-native'
 import * as Icons from "phosphor-react-native"
 import MessageItem from '@/components/MessageItem'
+import Input from '@/components/Input'
+import * as ImagePicker from  'expo-image-picker'
+import { Image } from 'expo-image'
 
 const dummyMessages = [
   {
@@ -109,6 +112,11 @@ const Conversation = () => {
          participants: stringifiedParticipants,
          type,  
         }= useLocalSearchParams();
+
+  const [message,setMessage] = useState("")  
+  const [selectedFile,setSelectedFile] = useState<{uri: string} | null>(null)
+        
+
   const participants = JSON.parse(stringifiedParticipants as string);  
   let conversationAvatar = avatar;
   let isDirect = type == "direct";    
@@ -118,6 +126,25 @@ const Conversation = () => {
     conversationAvatar = otherParticipant?.avatar
   
   let conversationName = isDirect ? otherParticipant?.name : name;
+
+  const onPickFile = async()=>{
+    let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images', 'videos'],
+       // allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.5,
+      });
+  
+  //    console.log(result);
+  
+      if (!result.canceled) {
+          setSelectedFile(result.assets[0])
+       }
+}
+   
+  const onSend = ()=>{
+    console.log("send message")
+  }
   return (
      <ScreenWrapper showPattern={true} bgOpacity={0.5}>
         <KeyboardAvoidingView
@@ -136,10 +163,10 @@ const Conversation = () => {
               </View> }
               rightIcon = {
                   <TouchableOpacity style={styles.plusIcon}>
-                    <Icons.DotsThreeVertical 
+                    <Icons.DotsThreeOutlineVertical
                      weight="fill"
                      color={colors.white} 
-                     size={verticalScale(20)} />
+                      />
                   </TouchableOpacity>
               }
               />
@@ -148,14 +175,52 @@ const Conversation = () => {
           <View style={styles.content}>
               <FlatList
                 data={dummyMessages}
+                keyExtractor={(item) => item.id}
                 inverted={true}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.messageContainer}
+                style={styles.flatList}
+                contentContainerStyle={styles.messageListContent}
                 renderItem={({item}) => <MessageItem item={item} isDirect={isDirect} />}
                 />
+           <View style={[styles.footer]}>
+              <Input 
+                value={message}
+                onChangeText={setMessage}
+                containerStyle={{
+                  paddingLeft: spacingX._15,
+                  paddingRight: scale(65),
+                  borderWidth: 0,
+                  backgroundColor: colors.neutral100,
+                }}
+                placeholder='Type a message ... '
+                icon = {
+                   <TouchableOpacity style={styles.inputIcon}
+                    onPress={onPickFile}>
+                       <Icons.Plus
+                         color={colors.black}
+                         weight="bold"
+                         size={verticalScale(22) }  />
+
+                         {
+                          selectedFile && selectedFile.uri && (
+                            <Image 
+                             source={selectedFile.uri}
+                             style={styles.selectedFile} 
+                             />
+                          )}
+                    </TouchableOpacity>
+                } 
+                />
+                <View style={styles.inputRightIcon}>
+                    <TouchableOpacity style={styles.inputIcon} onPress={onSend }>
+                       <Icons.PaperPlaneTilt 
+                         color={colors.black}
+                         weight="fill"
+                         size={verticalScale(22) }  />
+                    </TouchableOpacity>
+                </View>
+           </View>
           </View>
-
-
           </KeyboardAvoidingView> 
      </ScreenWrapper>
   )
@@ -188,6 +253,7 @@ const styles = StyleSheet.create({
     selectedFile:{
         position:"absolute",
         height: verticalScale(38),
+        width: verticalScale(38),      
         borderRadius: radius.full,
         alignSelf:"center",
     },
@@ -208,9 +274,15 @@ const styles = StyleSheet.create({
     footer:{
       paddingTop: spacingY._7,
       paddingBottom: verticalScale(22),
+      backgroundColor: colors.white,
+      paddingHorizontal: spacingX._7,
     },
-    messageContainer:{
-      flex:1,
+    flatList:{
+      flex: 1,
+    },
+    messageListContent:{
+      paddingVertical: spacingY._20,
+      paddingBottom: spacingY._30,
     },
     messageContent:{
       paddingTop: spacingY._20,
@@ -218,8 +290,6 @@ const styles = StyleSheet.create({
       gap: spacingY._12
     },
     plusIcon:{
-      backgroundColor: colors.primary,
-      borderRadius: radius.full,
-      padding:8,
+      padding: 8,
     }
 })
