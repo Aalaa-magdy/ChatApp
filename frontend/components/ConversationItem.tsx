@@ -5,6 +5,7 @@ import Avatar from "./Avatar";
 import Typo from "./Typo";
 import moment from "moment";
 import { ConversationListItemProps } from "@/types";
+import { useAuth } from "@/context/authContext";
 
 
 const ConversationItem = ({item,showDivider,router}:ConversationListItemProps) => {
@@ -12,10 +13,16 @@ const ConversationItem = ({item,showDivider,router}:ConversationListItemProps) =
 
 
     const openConversation = () => {}
+    const {user:currentUser} = useAuth()
 
     const lastMessage : any = item.lastMessage;
     const isDirect = item.type == "direct";
-    const avatar = item.avatar
+    let avatar = item.avatar;
+    const otherParticipant = isDirect ? item.participants.find(p=> p._id !== currentUser?.id) : null;
+    
+    if (isDirect && otherParticipant) 
+        avatar = otherParticipant?.avatar
+
     const getLastMessageContent = ()=>{
 
         if(!lastMessage) return "Say hi 👋";
@@ -46,11 +53,11 @@ const ConversationItem = ({item,showDivider,router}:ConversationListItemProps) =
               <TouchableOpacity
                style={styles.conversationItem}>
                  <View>
-                    <Avatar uri={null} size={47} isGroup={item.type == "group"} />
+                    <Avatar uri={avatar} size={47} isGroup={item.type == "group"} />
                  </View>
                  <View style={{flex:1}}>
                       <View style={styles.row}>
-                         <Typo size={17} fontWeight={"600"}>{item?.name}</Typo>
+                         <Typo size={17} fontWeight={"600"}>{isDirect ? otherParticipant?.name : item?.name}</Typo>
 
                          {
                             item.lastMessage && (
