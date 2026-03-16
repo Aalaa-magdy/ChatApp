@@ -10,9 +10,6 @@ import { useAuth } from "@/context/authContext";
 
 const ConversationItem = ({item,showDivider,router}:ConversationListItemProps) => {
 
-
-
-    const openConversation = () => {}
     const {user:currentUser} = useAuth()
 
     const lastMessage : any = item.lastMessage;
@@ -47,11 +44,25 @@ const ConversationItem = ({item,showDivider,router}:ConversationListItemProps) =
             return messageDate.format("MMM D , YYYY");
     
     }
-
+    const openConversation = () => {
+        router.push({
+            pathname: "/(main)/conversation",
+            params: {
+                id: item._id,
+                name: item.name,
+                avatar: item.avatar,
+                type: item.type,
+                participants: JSON.stringify(item.participants),
+            }
+        })
+    }
     return (
         <View>
               <TouchableOpacity
-               style={styles.conversationItem}>
+               style={styles.conversationItem}
+               onPress={openConversation}
+               >
+
                  <View>
                     <Avatar uri={avatar} size={47} isGroup={item.type == "group"} />
                  </View>

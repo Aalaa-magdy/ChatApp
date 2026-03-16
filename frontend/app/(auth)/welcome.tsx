@@ -36,7 +36,7 @@ const welcome = () => {
         </View> 
          <Button style={{backgroundColor : colors.white}}
            onPress={() => router.push('/(auth)/register')}>
-            <Typo >
+            <Typo style={{fontWeight:"bold"}} >
                 Get Started
             </Typo>
          </Button>

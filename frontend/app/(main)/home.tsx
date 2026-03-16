@@ -5,7 +5,7 @@ import Typo from '@/components/Typo';
 import { useAuth } from '@/context/authContext';
 import Button from '@/components/Button';
 import * as Icons from "phosphor-react-native";
-import { getConversations, testSocket } from '@/socket/socketEvents';
+import { getConversations, newConversation, testSocket } from '@/socket/socketEvents';
 import { colors, radius, spacingX, spacingY } from '@/constants/theme';
 import { verticalScale } from '@/utils/styling';
 import { useRouter } from 'expo-router';
@@ -23,9 +23,12 @@ const Home = () => {
     
    useEffect(()=>{
       getConversations(processGetConversations)
+      newConversation(newConversationHandler)
+
       getConversations(null)
       return ()=>{
         getConversations(processGetConversations,true)
+        newConversation(newConversationHandler,true)  
       }
    },[])
    
@@ -44,6 +47,12 @@ const Home = () => {
          testSocket(testSocketCallbackHandler,true);
        }
     },[])
+
+    const newConversationHandler = (res:ResponseProps)=>{  
+        if(res.success &&   res.data?.isNew){
+            setConversations((prev)=>[...prev, res.data]);
+        }
+    }
      
 
     const testSocketCallbackHandler = (data:any)=>{
