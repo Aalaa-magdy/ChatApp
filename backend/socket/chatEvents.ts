@@ -3,7 +3,7 @@ import Conversation from "../models/conversation.ts";
 
  export function registerChatEvents(io: SocketServer , socket: Socket){
 
-    socket.on("getCoversations", async()=>{
+    socket.on("getConversations", async()=>{
         console.log("get conversations event")
         try{
            const userId =  socket.data.userId;
@@ -34,6 +34,7 @@ import Conversation from "../models/conversation.ts";
                success: true,
                data : conversations
             })
+            console.log("conversaitons", conversations)
         }
         catch(error:any){
          console.error("Error get conversations", error);

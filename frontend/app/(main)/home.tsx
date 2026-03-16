@@ -12,24 +12,28 @@ import { useRouter } from 'expo-router';
 import ConversationItem from '@/components/ConversationItem';
 import Loading from '@/components/Loading';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-import { ResponseProps } from '@/types';
+import { ConversationProps, ResponseProps } from '@/types';
 
 const Home = () => { 
     const {user,signOut } = useAuth();
     const router = useRouter();
     const [loading,setLoading] = useState(false);
     const [selectedTab,setSelectedTab] = useState(0);
+    const [conversations,setConversations]= useState<ConversationProps[]>([])
     
-
    useEffect(()=>{
       getConversations(processGetConversations)
+      getConversations(null)
       return ()=>{
         getConversations(processGetConversations,true)
       }
-   })
+   },[])
    
    const processGetConversations =(res: ResponseProps)=>{
-      console.log("res",res)
+    
+       if(res.success){
+        setConversations(res.data) 
+       }
    }
 
     useEffect(()=>{
@@ -55,65 +59,65 @@ const Home = () => {
         }
     }
 
-    const conversations= [
-        {
-            name: "Alice",
-            type: "direct",
-            // lastMessage: {
-            //     senderName: "Alice",
-            //     content: "Hello, how are you?",
-            //     createdAt:"2026-02-24T10:00:00.000Z",
-            // }
-        },
-        {
-            name: "Project Team",
-            type: "group",
-            lastMessage: {
-                senderName: "Sarah",
-                content: "We are working on the project. We need to finish it by the end of the week.",
-                createdAt:"2026-02-24T14:00:00.000Z",
-            }
-        },
-        {
-            name: "Bob",
-            type: "direct",
-            lastMessage: {
-                senderName: "Bob",
-                content: "I'm busy right now. Can we talk later?",
-                createdAt:"2026-02-24T16:00:00.000Z",
-            }
-        },
-        {
-            name: "Family",
-            type: "group",
-            lastMessage: {
-                senderName: "Mom",
-                content: "We are going to the park this weekend. You should come with us.",
-                createdAt:"2026-02-24T17:00:00.000Z",
-            }
-        },
-        {
-            name: "Sarah",
-            type: "direct",
-            lastMessage: {
-                senderName: "Sarah",
-                content: "Thank you for your help. I appreciate it.",
-                createdAt:"2026-02-24T16:55 :00.000Z",
-            }
-        } 
-    ];
+    // const conversations= [
+    //     {
+    //         name: "Alice",
+    //         type: "direct",
+    //         // lastMessage: {
+    //         //     senderName: "Alice",
+    //         //     content: "Hello, how are you?",
+    //         //     createdAt:"2026-02-24T10:00:00.000Z",
+    //         // }
+    //     },
+    //     {
+    //         name: "Project Team",
+    //         type: "group",
+    //         lastMessage: {
+    //             senderName: "Sarah",
+    //             content: "We are working on the project. We need to finish it by the end of the week.",
+    //             createdAt:"2026-02-24T14:00:00.000Z",
+    //         }
+    //     },
+    //     {
+    //         name: "Bob",
+    //         type: "direct",
+    //         lastMessage: {
+    //             senderName: "Bob",
+    //             content: "I'm busy right now. Can we talk later?",
+    //             createdAt:"2026-02-24T16:00:00.000Z",
+    //         }
+    //     },
+    //     {
+    //         name: "Family",
+    //         type: "group",
+    //         lastMessage: {
+    //             senderName: "Mom",
+    //             content: "We are going to the park this weekend. You should come with us.",
+    //             createdAt:"2026-02-24T17:00:00.000Z",
+    //         }
+    //     },
+    //     {
+    //         name: "Sarah",
+    //         type: "direct",
+    //         lastMessage: {
+    //             senderName: "Sarah",
+    //             content: "Thank you for your help. I appreciate it.",
+    //             createdAt:"2026-02-24T16:55 :00.000Z",
+    //         }
+    //     } 
+    // ];
 
     let directConversations = conversations
-    .filter((item:any) => item.type == "direct")
-    .sort((a:any , b:any)=> {
+    .filter((item:ConversationProps) => item.type == "direct")
+    .sort((a:ConversationProps , b:ConversationProps)=> {
         const aDate = a?.lastMessage?.createdAt || a.createdAt;
         const bDate = b?.lastMessage?.createdAt || b.createdAt;
         return new Date(bDate).getTime() - new Date(aDate).getTime();
     })
 
     let groupConversations = conversations
-    .filter((item:any) => item.type == "group")
-    .sort((a:any , b:any)=> {
+    .filter((item:ConversationProps) => item.type == "group")
+    .sort((a:ConversationProps  , b:ConversationProps)=> {
         const aDate = a?.lastMessage?.createdAt || a.createdAt;
         const bDate = b?.lastMessage?.createdAt || b.createdAt;
         return new Date(bDate).getTime() - new Date(aDate).getTime();
@@ -157,7 +161,7 @@ const Home = () => {
                       </View>
                       <View style={styles.conversationList }>
                          {
-                            selectedTab === 0 && directConversations.map((item:any , index) => {
+                            selectedTab === 0 && directConversations.map((item:ConversationProps , index) => {
                                 return (
                                     <ConversationItem key={index} item={item} 
                                     router={router} showDivider={directConversations.length != index + 1} />
@@ -165,7 +169,7 @@ const Home = () => {
                             })
                          }
                            {
-                            selectedTab === 1  && groupConversations.map((item:any , index) => {
+                            selectedTab === 1  && groupConversations.map((item:ConversationProps , index) => {
                                 return (
                                     <ConversationItem key={index} item={item} 
                                     router={router} showDivider={groupConversations.length != index + 1} />
@@ -174,7 +178,7 @@ const Home = () => {
                          }
                       </View>
                       {
-                        !loading && selectedTab == 1 && directConversations.length==0 &&(
+                        !loading && selectedTab == 0 && directConversations.length==0 &&(
                             <Typo style={{textAlign: "center"}}> You don't have any direct messages yet.</Typo>
                         )
                       }

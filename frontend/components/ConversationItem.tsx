@@ -4,9 +4,10 @@ import { colors, spacingX, spacingY } from "@/constants/theme";
 import Avatar from "./Avatar";
 import Typo from "./Typo";
 import moment from "moment";
+import { ConversationListItemProps } from "@/types";
 
 
-const ConversationItem = ({item,showDivider,router}:any) => {
+const ConversationItem = ({item,showDivider,router}:ConversationListItemProps) => {
 
 
 
@@ -14,7 +15,7 @@ const ConversationItem = ({item,showDivider,router}:any) => {
 
     const lastMessage : any = item.lastMessage;
     const isDirect = item.type == "direct";
-
+    const avatar = item.avatar
     const getLastMessageContent = ()=>{
 
         if(!lastMessage) return "Say hi 👋";
