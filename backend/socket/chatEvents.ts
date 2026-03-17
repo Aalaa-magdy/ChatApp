@@ -128,7 +128,7 @@ import Message from "../models/message.ts";
                   avatar: data.sender.avatar,
                },
                attachment: data.attachment,
-               createdAt: new Date().toISOString(),
+               createdAt: new Date().toISOString() ,
                conversationId : data.conversationId,
             }
          });

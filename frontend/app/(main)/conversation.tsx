@@ -7,7 +7,7 @@ import { colors, radius, spacingX, spacingY } from '@/constants/theme'
 import { useAuth } from '@/context/authContext'
 import { scale, verticalScale } from '@/utils/styling'
 import { useLocalSearchParams } from 'expo-router'
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity, FlatList, Touchable, Alert } from 'react-native'
 import * as Icons from "phosphor-react-native"
 import MessageItem from '@/components/MessageItem'
@@ -16,6 +16,8 @@ import * as ImagePicker from  'expo-image-picker'
 import { Image } from 'expo-image'
 import Loading from '@/components/Loading'
 import { uploadFileToCloudinary } from '@/services/imageService'
+import { newMessage } from '@/socket/socketEvents'
+import { ResponseProps } from '@/types'
 
 const dummyMessages = [
   {
@@ -129,6 +131,18 @@ const Conversation = () => {
   
   let conversationName = isDirect ? otherParticipant?.name : name;
 
+  useEffect(()=>{
+     newMessage(newMessageHandler)
+     return ()=>{
+      newMessage(newMessageHandler,true)
+     }
+  },[])
+
+  const newMessageHandler = (res:ResponseProps)=>{
+     setLoading(false);
+     console.log("new message: ", res);
+  }
+
   const onPickFile = async()=>{
     let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images', 'videos'],
@@ -163,6 +177,19 @@ const Conversation = () => {
          }
       }
       // console.log("attachment:" , attachment)
+
+      newMessage({
+        conversationId: conversationId,
+        sender: {
+          id: currentUser?.id,
+          name: currentUser.name,
+          avatar: currentUser.avatar,
+        },
+        content: message.trim(),
+        attachment: attachment,
+      }); 
+      setMessage("");
+      setSelectedFile(null);
     } catch(error){
       console.log("Error sending message: ", error)
       Alert.alert("Error","Failed to send message")
