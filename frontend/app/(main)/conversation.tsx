@@ -8,12 +8,14 @@ import { useAuth } from '@/context/authContext'
 import { scale, verticalScale } from '@/utils/styling'
 import { useLocalSearchParams } from 'expo-router'
 import React, { use, useState } from 'react'
-import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity, FlatList, Touchable } from 'react-native'
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity, FlatList, Touchable, Alert } from 'react-native'
 import * as Icons from "phosphor-react-native"
 import MessageItem from '@/components/MessageItem'
 import Input from '@/components/Input'
 import * as ImagePicker from  'expo-image-picker'
 import { Image } from 'expo-image'
+import Loading from '@/components/Loading'
+import { uploadFileToCloudinary } from '@/services/imageService'
 
 const dummyMessages = [
   {
@@ -115,7 +117,7 @@ const Conversation = () => {
 
   const [message,setMessage] = useState("")  
   const [selectedFile,setSelectedFile] = useState<{uri: string} | null>(null)
-        
+  const [loading,setLoading] = useState(false)        
 
   const participants = JSON.parse(stringifiedParticipants as string);  
   let conversationAvatar = avatar;
@@ -142,13 +144,39 @@ const Conversation = () => {
        }
 }
    
-  const onSend = ()=>{
-    console.log("send message")
+  const onSend = async()=>{
+    if(!message.trim() && !selectedFile) return;
+    if(!currentUser) return;
+    setLoading(true);
+
+    try{
+      let attachment = null;
+      if(selectedFile){
+         const uploadResult = await uploadFileToCloudinary(selectedFile , "message-attachments")
+
+         if(uploadResult.success){
+             attachment = uploadResult.data;
+         }
+         else{
+            setLoading(false);
+            Alert.alert("Error","Could not send the image!")
+         }
+      }
+      // console.log("attachment:" , attachment)
+    } catch(error){
+      console.log("Error sending message: ", error)
+      Alert.alert("Error","Failed to send message")
+    }finally{
+        setLoading(false)
+    }
   }
   return (
      <ScreenWrapper showPattern={true} bgOpacity={0.5}>
         <KeyboardAvoidingView
-          behavior={ Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container} >
+          behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+          style={styles.container}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+        >
              <Header 
               style={styles.header}
               title={conversationName}
@@ -181,12 +209,15 @@ const Conversation = () => {
                 style={styles.flatList}
                 contentContainerStyle={styles.messageListContent}
                 renderItem={({item}) => <MessageItem item={item} isDirect={isDirect} />}
-                />
-           <View style={[styles.footer]}>
+                keyboardShouldPersistTaps="handled"
+              />
+          </View>
+          <View style={[styles.footer]} >
               <Input 
                 value={message}
                 onChangeText={setMessage}
                 containerStyle={{
+                  alignSelf: 'stretch',
                   paddingLeft: spacingX._15,
                   paddingRight: scale(65),
                   borderWidth: 0,
@@ -194,13 +225,13 @@ const Conversation = () => {
                 }}
                 placeholder='Type a message ... '
                 icon = {
-                   <TouchableOpacity style={styles.inputIcon}
+                   <TouchableOpacity style={styles.inputIcon} 
                     onPress={onPickFile}>
                        <Icons.Plus
                          color={colors.black}
                          weight="bold"
                          size={verticalScale(22) }  />
-
+                        
                          {
                           selectedFile && selectedFile.uri && (
                             <Image 
@@ -211,16 +242,19 @@ const Conversation = () => {
                     </TouchableOpacity>
                 } 
                 />
-                <View style={styles.inputRightIcon}>
-                    <TouchableOpacity style={styles.inputIcon} onPress={onSend }>
-                       <Icons.PaperPlaneTilt 
-                         color={colors.black}
-                         weight="fill"
-                         size={verticalScale(22) }  />
-                    </TouchableOpacity>
-                </View>
-           </View>
-          </View>
+               <View style={styles.inputRightIcon} >
+                  <TouchableOpacity style={styles.inputIcon} onPress={onSend}>
+                      {
+                        loading ? 
+                        (<Loading size="small" color={colors.white} />):
+                        (<Icons.PaperPlaneTilt 
+                          color={colors.black}
+                          weight="fill"
+                          size={verticalScale(22) }  />)
+                      }
+                  </TouchableOpacity>
+               </View>
+            </View>
           </KeyboardAvoidingView> 
      </ScreenWrapper>
   )
