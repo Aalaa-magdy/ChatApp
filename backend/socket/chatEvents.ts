@@ -1,5 +1,6 @@
  import type { Socket, Server as SocketServer } from "socket.io";
 import Conversation from "../models/conversation.ts";
+import Message from "../models/message.ts";
 
  export function registerChatEvents(io: SocketServer , socket: Socket){
 
@@ -105,4 +106,45 @@ import Conversation from "../models/conversation.ts";
                 })
               }
         })
+
+    socket.on("newMessage", async (data)=>{
+        console.log("newMessage event: ", data);
+        try{
+           const message = await Message.create({
+             conversationId: data.conversationId,
+             senderId : data.sender.id,
+             content: data.content,
+             attachment: data.attachment,
+           })
+
+           io.to(data.conversationId).emit("newMessage",{
+            success: true,
+            data: {
+               id:message._id,
+               content: data.content,
+               sender: {
+                  id:data.sender.id,
+                  name: data.sender.name,
+                  avatar: data.sender.avatar,
+               },
+               attachment: data.attachment,
+               createdAt: new Date().toISOString(),
+               conversationId : data.conversationId,
+            }
+         });
+         
+         // update the conversation with the new message
+         await Conversation.findByIdAndUpdate(data.conversationId, {
+            lastMessage: message._id,
+         })
+
+
+        }
+        catch(error){ 
+         console.error("Error newMessage", error);
+         socket.emit("newMessage",{
+             success: false,
+             msg: "Failed send new message"
+         })}
+    })   
 }
