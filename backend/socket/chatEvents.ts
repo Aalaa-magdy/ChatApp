@@ -147,4 +147,37 @@ import Message from "../models/message.ts";
              msg: "Failed send new message"
          })}
     })   
+    socket.on("getMessages", async (data : {conversationId: string}) =>{
+        console.log("getMessages event: ", data);
+        try{
+           const messages = await Message.find({
+             conversationId: data.conversationId
+           })
+           .sort({createdAt: -1})
+           .populate<{senderId   : { _id: string, name: string, avatar: string}}>({
+            path: "senderId",
+            select: "name avatar"
+           });
+
+           const messagesWithSender = messages.map((message)=>({
+            ...message,
+            sender: {
+              id: message.senderId._id,
+              name: message.senderId.name,
+              avatar: message.senderId.avatar,
+            }
+           }))
+
+           socket.emit("getMessages",{
+            success: true,
+            data: messagesWithSender
+           })
+        }
+        catch(error){ 
+         console.error("Error getMessages", error);
+         socket.emit("getMessages",{
+             success: false,
+             msg: "Failed to get messages"
+         })}
+    })   
 }
