@@ -5,7 +5,7 @@ import Typo from '@/components/Typo';
 import { useAuth } from '@/context/authContext';
 import Button from '@/components/Button';
 import * as Icons from "phosphor-react-native";
-import { getConversations, newConversation, testSocket } from '@/socket/socketEvents';
+import { getConversations, newConversation, newMessage, testSocket } from '@/socket/socketEvents';
 import { colors, radius, spacingX, spacingY } from '@/constants/theme';
 import { verticalScale } from '@/utils/styling';
 import { useRouter } from 'expo-router';
@@ -24,14 +24,29 @@ const Home = () => {
    useEffect(()=>{
       getConversations(processGetConversations)
       newConversation(newConversationHandler)
+      newMessage(newMessageHandler)
 
       getConversations(null)
       return ()=>{
         getConversations(processGetConversations,true)
         newConversation(newConversationHandler,true)  
+        newMessage(newMessageHandler,true)
       }
    },[])
    
+   const newMessageHandler = (res:ResponseProps)=>{
+    if(res.success){
+        let conversationId = res.data.conversationId;
+        setConversations((prev)=>{
+            let updatedConversations = prev.map((item)=>{
+               if(item._id == conversationId)
+                 item.lastMessage = res.data;
+                return item;
+            })
+            return updatedConversations;
+        })
+    }
+   }
    const processGetConversations =(res: ResponseProps)=>{
     
        if(res.success){
