@@ -11,7 +11,9 @@ const MessageItem = (
     {item, isDirect} : {item : MessageProps, isDirect: boolean}
  ) => {
     const {user:currentUser} = useAuth();
-    const isMe = item.isMe;
+    const isMe = currentUser?.id == item.sender.id;
+
+    console.log("isMe: ", isMe);
     return (
         <View style={
             [styles.messageContainer,

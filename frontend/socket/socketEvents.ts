@@ -113,3 +113,22 @@ export const newMessage = (payload:any,off:boolean = false)=>{
     }
 
 }  
+
+export const getMessages = (payload:any,off:boolean = false)=>{
+    const socket = getSocket();
+
+    if(!socket){
+        console.log("Socket not connected");
+        return;
+    }
+    if(off){
+        socket.off("getMessages",payload); // payload is the callback
+    }
+    else if(typeof payload === "function"){
+        socket.on("getMessages",payload); // payload as callback for this event 
+    }
+    else{
+         socket.emit("getMessages",payload); // payload as data to send to the server
+    }
+
+}  

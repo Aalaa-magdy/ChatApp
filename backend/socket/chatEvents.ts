@@ -154,10 +154,11 @@ import Message from "../models/message.ts";
              conversationId: data.conversationId
            })
            .sort({createdAt: -1})
-           .populate<{senderId   : { _id: string, name: string, avatar: string}}>({
+           .populate<{senderId  : { _id: string, name: string, avatar: string}}>({
             path: "senderId",
             select: "name avatar"
-           });
+           })
+           .lean();
 
            const messagesWithSender = messages.map((message)=>({
             ...message,
