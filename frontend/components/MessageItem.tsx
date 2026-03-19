@@ -38,15 +38,12 @@ const MessageItem = (
              >
              
              {
-                !isMe && !isDirect && (
-                 <Typo color= {colors.neutral900} fontWeight={"600"} size={13}>
+                !isMe && (
+                 <Typo color={colors.neutral900} fontWeight={"600"} size={13}>
                     {item.sender.name}
                  </Typo>
                 )
-             }
-             <Typo color= {colors.neutral900} fontWeight={"600"} size={13}>
-                {item.sender.name}
-            </Typo> 
+             } 
 
 
               {
