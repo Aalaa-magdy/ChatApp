@@ -27,7 +27,7 @@ const MessageItem = (
             ]}>
             {
                 !isMe && !isDirect && (
-                    <Avatar size={30} uri={null} style={styles.messageAvatar} />
+                    <Avatar size={30} uri={item?.sender?.avatar} style={styles.messageAvatar} />
                 )
             }
              <View style= { [

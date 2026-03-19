@@ -69,7 +69,13 @@ const Conversation = () => {
 
   const newMessageHandler = (res:ResponseProps)=>{
      setLoading(false);
-     console.log("new message: ", res);
+     if(res.success){
+        if(res.data?.conversationId == conversationId){
+          setMessages((prev)=>[res.data as MessageProps, ...prev])
+     }
+     else{
+       Alert.alert("Error","Failed to send message")
+     }
   }
 
   const onPickFile = async()=>{
