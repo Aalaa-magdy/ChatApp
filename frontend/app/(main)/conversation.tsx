@@ -72,9 +72,10 @@ const Conversation = () => {
      if(res.success){
         if(res.data?.conversationId == conversationId){
           setMessages((prev)=>[res.data as MessageProps, ...prev])
+        }
      }
      else{
-       Alert.alert("Error","Failed to send message")
+        Alert.alert("Error", res.msg || "Failed to send message")
      }
   }
 
@@ -165,7 +166,7 @@ const Conversation = () => {
           <View style={styles.content}>
               <FlatList
                 data={messages}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item, index) => item.id ?? (item as { _id?: string })._id ?? `msg-${index}`}
                 inverted={true}
                 showsVerticalScrollIndicator={false}
                 style={styles.flatList}
@@ -287,5 +288,5 @@ const styles = StyleSheet.create({
     },
     plusIcon:{
       padding: 8,
-    }
+    },
 })

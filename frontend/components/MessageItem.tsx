@@ -7,6 +7,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import Avatar from './Avatar';
 import Typo from './Typo';
 import moment from 'moment';
+import { Image } from 'expo-image';
 
 const MessageItem = (
     {item, isDirect} : {item : MessageProps, isDirect: boolean}
@@ -45,8 +46,19 @@ const MessageItem = (
              }
              <Typo color= {colors.neutral900} fontWeight={"600"} size={13}>
                 {item.sender.name}
-            </Typo>   
-            {
+            </Typo> 
+
+
+              {
+                item.attachment && (
+                    <Image 
+                    source={item.attachment} 
+                    style={styles.attachment}
+                    contentFit="cover"
+                    transition={100} />
+                )
+              }
+            {  
                 item.content && <Typo size={15} color={colors.neutral900}>{item.content}</Typo>
             }
             <Typo
