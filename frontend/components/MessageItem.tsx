@@ -6,6 +6,7 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import Avatar from './Avatar';
 import Typo from './Typo';
+import moment from 'moment';
 
 const MessageItem = (
     {item, isDirect} : {item : MessageProps, isDirect: boolean}
@@ -14,6 +15,11 @@ const MessageItem = (
     const isMe = currentUser?.id == item.sender.id;
 
     console.log("isMe: ", isMe);
+   
+    const formattedDate = moment(item.createdAt).isSame(moment(), "day") ?
+     moment(item.createdAt).format("h:mm A") :
+      moment(item.createdAt).format("MMM D , h:mm A");
+
     return (
         <View style={
             [styles.messageContainer,
@@ -49,7 +55,7 @@ const MessageItem = (
               fontWeight={"500"}
               color={colors.neutral500}
               >
-                {item.createdAt}
+                {formattedDate}
               </Typo>
             </View>
         </View>
