@@ -6,9 +6,59 @@ A real-time mobile chat application built with **React Native (Expo)** and a **N
 
 ## 📱 Screenshots
 
-> _Add your app screenshots here_
+<div align="center" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+  
+  <figure style="text-align: center;">
+    <img src="./screenshots/first.png" width="200"/>
+    <figcaption>first.png</figcaption>
+  </figure>
 
----
+  <figure style="text-align: center;">
+    <img src="./screenshots/second.png" width="200"/>
+    <figcaption>second.png</figcaption>
+  </figure>
+
+  <figure style="text-align: center;">
+    <img src="./screenshots/third.png" width="200"/>
+    <figcaption>third.png</figcaption>
+  </figure>
+
+  <figure style="text-align: center;">
+    <img src="./screenshots/fourth.png" width="200"/>
+    <figcaption>fourth.png</figcaption>
+  </figure>
+
+  <figure style="text-align: center;">
+    <img src="./screenshots/fifth.png" width="200"/>
+    <figcaption>fifth.png</figcaption>
+  </figure>
+
+  <figure style="text-align: center;">
+    <img src="./screenshots/sixth.png" width="200"/>
+    <figcaption>sixth.png</figcaption>
+  </figure>
+
+  <figure style="text-align: center;">
+    <img src="./screenshots/seventh.png" width="200"/>
+    <figcaption>seventh.png</figcaption>
+  </figure>
+
+  <figure style="text-align: center;">
+    <img src="./screenshots/eith.png" width="200"/>
+    <figcaption>eith.png</figcaption>
+  </figure>
+
+  <figure style="text-align: center;">
+    <img src="./screenshots/ninth.png" width="200"/>
+    <figcaption>ninth.png</figcaption>
+  </figure>
+
+  <figure style="text-align: center;">
+    <img src="./screenshots/ten.png" width="200"/>
+    <figcaption>ten.png</figcaption>
+  </figure>
+
+</div>
 
 ## ✨ Features
 
